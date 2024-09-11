@@ -1,7 +1,11 @@
 import time
 import random
 import requests
+from bs4 import BeautifulSoup
 
+def remove_html_tags(text):
+    soup = BeautifulSoup(text, "html.parser")
+    return soup.get_text()
 
 class Job104Spider():
     def search(self, keyword, max_num=10, filter_params=None, sort_type='符合度', is_sort_asc=False):
@@ -88,11 +92,13 @@ class Job104Spider():
         salary_high = int(job_data['salaryLow'])
         salary_low = int(job_data['salaryHigh'])
 
+        clean_desc = remove_html_tags(job_data['descSnippet'])
+
         job = {
             'job_id': job_id,
             'type': job_data['jobType'],
             'name': job_data['jobName'],  # 職缺名稱
-            'desc': job_data['descSnippet'],  # 描述
+            'desc': clean_desc,  # 描述
             'appear_date': appear_date,  # 更新日期
             'apply_num': apply_num,
             'apply_text': job_data['applyDesc'],  # 應徵人數描述
