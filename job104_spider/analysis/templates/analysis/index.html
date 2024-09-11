@@ -4,75 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Search and Fitter</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Material Icons from Google Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Optional: Custom CSS -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        .pagination {
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Job Search</h1>
-    <form method="post" action="/search/">
-        {% csrf_token %}
-        <label for="keyword">Search Keyword:</label>
-        <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required>
-        <button type="submit">Submit</button>
-    </form>
-    <h2>Total Jobs Found: {{ total_count }}</h2>
-    {% if page_obj %}
-        <h2>Results</h2>
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Company</th>
-                <th>Location</th>
-                <th>Salary</th>
-            </tr>
-            {% for result in page_obj %}
-                <tr>
-                    <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
-                    <td>{{ result.company_name }}</td>
-                    <td>{{ result.company_addr }}</td>
-                    <td>{{ result.salary }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">First</a>
-                    <a href="?page={{ page_obj.previous_page_number}}">Previous</a>
-                {% endif %}
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                {% endif %}
-            </span>
+    <div class="container">
+        <h1 class="center-align">Job Search</h1>
+        <div class="row">
+            <form method="post" action="/search/" class="col s12">
+                {% csrf_token %}
+                <div class="input-field col s12">
+                    <label for="keyword">Search Keyword:</label>
+                    <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required>
+                </div>
+                <div class="col s12">
+                    <button type="submit" class="btn waves-effect waves-light">Submit</button>
+                </div>
+            </form>
         </div>
-    {% endif %}
-    <h1>Job Fitters</h2>
-    <form method="post" action="/run_job_fitter/">
-        {% csrf_token %}
-        <label for="skills">Input Your Skills (comma separated):</label>
-        <input type="text" id="skills" name="skills" required>
-        <button type="submit">Submit</button>
-    </form>
-    {% if fitter_results %}
-        <h2>Fitter Results</h2>
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Company</th>
-                <th>Description</th>
-                <th>Similarity Score</th>
-            </tr>
-            {% for result in fitter_results %}
+        <h2>Total Jobs Found: {{ total_count }}</h2>
+        {% if page_obj %}
+            <h2>Results</h2>
+            <table class="striped highlight">
                 <tr>
-                    <td><a href="{{ result.job_url }}" target="_blank">{{ result.name }}</a></td>
-                    <td>{{ result.company_name }}</td>
-                    <td>{{ result.desc }}</td>
-                    <td>{{ result.similarity_score }}</td>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Salary</th>
                 </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+                {% for result in page_obj %}
+                    <tr>
+                        <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
+                        <td>{{ result.company_name }}</td>
+                        <td>{{ result.company_addr }}</td>
+                        <td>{{ result.salary }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <ul class="pagination center-align">
+                {% if page_obj.has_previous %}
+                    <li class="waves-effect"><a href="?page=1"><i class="material-icons">first_page</i></a></li>
+                    <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+                {% endif %}
+                <li class="active"><a href="#!">{{ page_obj.number }}</a></li>
+                {% if page_obj.has_next %}
+                    <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+                    <li class="waves-effect"><a href="?page={{ page_obj.paginator.num_pages }}"><i class="material-icons">last_page</i></a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+
+        <!-- Job Fitter Section -->
+        <h1 class="center-align">Job Fitters</h2>
+        <div class="row">
+            <form method="post" action="/run_job_fitter/" class="col s12">
+                {% csrf_token %}
+                <div class="input-field col s12">
+                    <label for="skills">Input Your Skills (comma separated):</label>
+                    <input type="text" id="skills" name="skills" required>
+                </div>
+                <div class="col s12">
+                    <button type="submit" class="btn waves-effect waves-light">Submit</button>
+                </div>
+            </form>
+        </div>
+        {% if fitter_results %}
+            <h2>Fitter Results</h2>
+            <table class="striped highlight">
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Description</th>
+                    <th>Similarity Score</th>
+                </tr>
+                {% for result in fitter_results %}
+                    <tr>
+                        <td><a href="{{ result.job_url }}" target="_blank">{{ result.name }}</a></td>
+                        <td>{{ result.company_name }}</td>
+                        <td>{{ result.desc }}</td>
+                        <td>{{ result.similarity_score }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
 </body>
 </html>
