@@ -1,10 +1,11 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from .test_jobs_om import ObjectMother
 from django.core.paginator import Paginator
 from itertools import cycle
-
+import subprocess
+import json
 # Create your tests here.
 class JobSearchTests(TestCase):
     def setUp(self):
@@ -82,3 +83,61 @@ class JobSearchTests(TestCase):
         # Ensure the second page loads correctly with the paginated results
         self.assertEqual(response_page_2.status_code, 200)
         self.assertContains(response_page_2, 'Job Search')
+
+class JobFitterTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Sample job data to store in session for the test
+        self.sample_jobs = [
+            {
+                'name': 'Python Developer',
+                'company_name': 'Tech Corp',
+                'desc': 'Developing applications using Python and Django',
+                'job_url': 'https://example.com/job/1'
+            },
+            {
+                'name': 'Data Scientist',
+                'company_name': 'Data Inc.',
+                'desc': 'Analyzing data and building models using Python',
+                'job_url': 'https://example.com/job/2'
+            }
+        ]
+
+        self.sample_skills = "Python, Django, Data Science"
+
+    @patch('subprocess.run')
+    def test_run_job_fitter(self, mock_subprocess):
+        print("test_run_job_fitter")
+        # Mock the subprocess to return a successful result
+        mock_subprocess.return_value = subprocess.CompletedProcess(
+            args=['python', 'job_fitter_doc2vec.py'],
+            returncode=0,
+            stdout=json.dumps([{
+                'name': 'Python Developer',
+                'company_name': 'Tech Corp',
+                'similarity_score': 0.95,
+                'job_url': 'https://example.com/job/1'
+            }]),
+            stderr=''
+        )
+
+        # Set session data with job results (simulating a search that already occurred)
+        session = self.client.session
+        session['results'] = self.sample_jobs
+        session.save()
+
+        # Post the skills to run the job fitter
+        response = self.client.post(reverse('run_job_fitter'), {'skills': self.sample_skills})
+
+        # Check if the view returned a valid response
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the session was updated with fitter results
+        session = self.client.session
+        self.assertIn('fitter_results', session)
+
+        # Verify the fitter results
+        fitter_results = session['fitter_results']
+        self.assertEqual(fitter_results[0]['name'], 'Python Developer')
+        self.assertEqual(fitter_results[0]['company_name'], 'Tech Corp')
+        self.assertEqual(fitter_results[0]['similarity_score'], 0.95)

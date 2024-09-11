@@ -48,5 +48,31 @@
             </span>
         </div>
     {% endif %}
+    <h1>Job Fitters</h2>
+    <form method="post" action="/run_job_fitter/">
+        {% csrf_token %}
+        <label for="skills">Input Your Skills (comma separated):</label>
+        <input type="text" id="skills" name="skills" required>
+        <button type="submit">Submit</button>
+    </form>
+    {% if fitter_results %}
+        <h2>Fitter Results</h2>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Description</th>
+                <th>Similarity Score</th>
+            </tr>
+            {% for result in fitter_results %}
+                <tr>
+                    <td><a href="{{ result.job_url }}" target="_blank">{{ result.name }}</a></td>
+                    <td>{{ result.company_name }}</td>
+                    <td>{{ result.desc }}</td>
+                    <td>{{ result.similarity_score }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 </body>
 </html>

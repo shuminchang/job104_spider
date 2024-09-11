@@ -92,7 +92,7 @@ class Job104Spider():
             'job_id': job_id,
             'type': job_data['jobType'],
             'name': job_data['jobName'],  # 職缺名稱
-            # 'desc': job_data['descSnippet'],  # 描述
+            'desc': job_data['descSnippet'],  # 描述
             'appear_date': appear_date,  # 更新日期
             'apply_num': apply_num,
             'apply_text': job_data['applyDesc'],  # 應徵人數描述
