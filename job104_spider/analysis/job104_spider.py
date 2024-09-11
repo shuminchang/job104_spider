@@ -4,7 +4,7 @@ import requests
 
 
 class Job104Spider():
-    def search(self, keyword, max_mun=10, filter_params=None, sort_type='符合度', is_sort_asc=False):
+    def search(self, keyword, max_num=10, filter_params=None, sort_type='符合度', is_sort_asc=False):
         """搜尋職缺"""
         jobs = []
         total_count = 0
@@ -34,7 +34,7 @@ class Job104Spider():
         query += sort_params
 
         page = 1
-        while len(jobs) < max_mun:
+        while len(jobs) < max_num:
             params = f'{query}&page={page}'
             r = requests.get(url, params=params, headers=headers)
             if r.status_code != requests.codes.ok:
@@ -52,7 +52,7 @@ class Job104Spider():
             page += 1
             time.sleep(random.uniform(3, 5))
 
-        return total_count, jobs[:max_mun]
+        return total_count, jobs[:max_num]
 
     def get_job(self, job_id):
         """取得職缺詳細資料"""
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         # 'excludeJobKeyword': '科技',  # 排除關鍵字
         # 'kwop': '1',  # 只搜尋職務名稱
     }
-    total_count, jobs = job104_spider.search('python', max_mun=10, filter_params=filter_params)
+    total_count, jobs = job104_spider.search('python', max_num=10, filter_params=filter_params)
 
     print('搜尋結果職缺總數：', total_count)
     # print(len(jobs))

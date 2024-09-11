@@ -7,10 +7,29 @@
 </head>
 <body>
     <h1>Job Search</h1>
-    <form method="post" action="/analysis/serach">
+    <form method="post" action="/search/">
+        {% csrf_token %}
         <label for="keyword">Search Keyword:</label>
         <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required>
         <button type="submit">Submit</button>
     </form>
+    <h2>Total Jobs Found: {{ total_count }}</h2>
+    <h2>Results</h2>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Salary</th>
+        </tr>
+        {% for result in results %}
+            <tr>
+                <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
+                <td>{{ result.company_name }}</td>
+                <td>{{ result.company_addr }}</td>
+                <td>{{ result.salary }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
