@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 import json
 import subprocess
 
+PAGINATION = 10
+
 # Create your views here.
 def index(request):
     current_data = request.session.get('results', [])
@@ -11,7 +13,7 @@ def index(request):
     keyword = request.session.get('keyword', '')
     fitter_results = request.session.get('fitter_results', '')
 
-    paginator = Paginator(current_data, 20)  # Show 20 jobs per page
+    paginator = Paginator(current_data, PAGINATION)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -42,7 +44,7 @@ def search(request):
         keyword = request.session.get('keyword', '')
 
     # Handle pagination
-    paginator = Paginator(transformed_jobs, 20)
+    paginator = Paginator(transformed_jobs, PAGINATION)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -75,7 +77,7 @@ def run_job_fitter(request):
         )
 
         # Handle pagination
-        paginator = Paginator(current_data, 20)
+        paginator = Paginator(current_data, PAGINATION)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
