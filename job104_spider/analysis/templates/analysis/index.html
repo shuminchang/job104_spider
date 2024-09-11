@@ -14,22 +14,39 @@
         <button type="submit">Submit</button>
     </form>
     <h2>Total Jobs Found: {{ total_count }}</h2>
-    <h2>Results</h2>
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Company</th>
-            <th>Location</th>
-            <th>Salary</th>
-        </tr>
-        {% for result in results %}
+    {% if page_obj %}
+        <h2>Results</h2>
+        <table>
             <tr>
-                <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
-                <td>{{ result.company_name }}</td>
-                <td>{{ result.company_addr }}</td>
-                <td>{{ result.salary }}</td>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Salary</th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for result in page_obj %}
+                <tr>
+                    <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
+                    <td>{{ result.company_name }}</td>
+                    <td>{{ result.company_addr }}</td>
+                    <td>{{ result.salary }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">First</a>
+                    <a href="?page={{ page_obj.previous_page_number}}">Previous</a>
+                {% endif %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
 </body>
 </html>

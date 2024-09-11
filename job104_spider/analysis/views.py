@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .job104_spider import Job104Spider
+from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
@@ -22,8 +23,12 @@ def search(request):
     request.session['total_count'] = total_count
     request.session['keyword'] = keyword
 
+    paginator = Paginator(transformed_jobs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'analysis/index.html', {
-        'results': transformed_jobs,
+        'page_obj': page_obj,
         'total_count': total_count,
         'keyword': keyword
     })
