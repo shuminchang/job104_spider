@@ -13,16 +13,25 @@ def index(request):
     })
 
 def search(request):
-    keyword = request.POST.get('keyword')
-    job_spider = Job104Spider()
-    total_count, jobs = job_spider.search(keyword, max_num=100)
-    transformed_jobs = [job_spider.search_job_transform(job) for job in jobs]
+    # Check if it's a new search or a pagination request
+    if request.method == 'POST':
+        # New search request
+        keyword = request.POST.get('keyword')
+        job_spider = Job104Spider()
+        total_count, jobs = job_spider.search(keyword, max_num=100)
+        transformed_jobs = [job_spider.search_job_transform(job) for job in jobs]
 
-    # Store the search results in the session
-    request.session['results'] = transformed_jobs
-    request.session['total_count'] = total_count
-    request.session['keyword'] = keyword
+        # Store the search results in the session
+        request.session['results'] = transformed_jobs
+        request.session['total_count'] = total_count
+        request.session['keyword'] = keyword
+    else:
+        # Pagination request, use the session-stored data
+        transformed_jobs = request.session.get('results', [])
+        total_count = request.session.get('total_count', 0)
+        keyword = request.session.get('keyword', '')
 
+    # Handle pagination
     paginator = Paginator(transformed_jobs, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
