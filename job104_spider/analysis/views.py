@@ -6,12 +6,20 @@ import subprocess
 
 # Create your views here.
 def index(request):
+    current_data = request.session.get('results', [])
     total_count = request.session.get('total_count', 0)
     keyword = request.session.get('keyword', '')
+    fitter_results = request.session.get('fitter_results', '')
 
+    paginator = Paginator(current_data, 20)  # Show 20 jobs per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, 'analysis/index.html', {
+        'page_obj': page_obj,
         'total_count': total_count,
-        'keyword': keyword
+        'keyword': keyword,
+        'fitter_results': fitter_results
     })
 
 def search(request):
