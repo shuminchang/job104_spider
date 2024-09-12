@@ -70,12 +70,15 @@ def job_fitter(skills, data_path):
             similarity = cosine_similarity([your_skills_vector], [job_vector])[0][0]
             similarity_scores.append(similarity)
 
+        # print(similarity_scores)
         # Add similarity scores to the DataFrame
         real_job_data_subset['similarity_score'] = similarity_scores
 
         # Rank jobs by similarity score
         ranked_jobs = real_job_data_subset.sort_values(by='similarity_score', ascending=False)
 
+        # Round similarity score explicitly
+        ranked_jobs['similarity_score'] = ranked_jobs['similarity_score'].apply(lambda x: round(x, 4))
         # Return the top 10 job matches
         top_jobs = ranked_jobs.head(10).to_dict(orient='records')
         return top_jobs
