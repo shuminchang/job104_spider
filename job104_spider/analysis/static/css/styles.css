@@ -13,3 +13,16 @@ body {
 #advanced-search-filters {
     margin-top: 20px;
 }
+
+.job-search-section {
+    background-color: #e0f7fa; /* Light cyan for Job Search */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.job-fitting-section {
+    background-color: #ffe0b2; /* Light orange for Job Fitter */
+    padding: 20px;
+    border-radius: 10px;
+}
