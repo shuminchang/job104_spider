@@ -35,9 +35,9 @@
                         <div class="input-field col s12">
                             <select multiple name="area">
                                 <option value="" disabled selected>Choose Area</option>
-                                <option value="6001001000">台北市</option>
-                                <option value="6001016000">高雄市</option>
-                                <!-- Add more area options as needed -->
+                                {% for area in areas %}
+                                    <option value="{{ area.value }}">{{ area.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Area</label>
                         </div>
@@ -46,19 +46,31 @@
                         <div class="input-field col s12">
                             <select multiple name="s9">
                                 <option value="" disabled selected>Choose Work Shift</option>
-                                <option value="1">日班</option>
-                                <option value="2">夜班</option>
-                                <option value="4">大夜班</option>
-                                <option value="8">假日班</option>
+                                {% for work_shift in work_shifts %}
+                                    <option value="{{ work_shift.value }}">{{ work_shift.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Work Shift</label>
+                        </div>
+
+                        <!-- Shift Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="s9">
+                                <option value="" disabled selected>Choose Shift</option>
+                                {% for shift in shifts %}
+                                    <option value="{{ shift.value }}">{{ shift.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Shift</label>
                         </div>
 
                         <!-- Holiday System Filter -->
                         <div class="input-field col s12">
                             <select name="wktm">
                                 <option value="" disabled selected>Choose Holiday System</option>
-                                <option value="1">週休二日</option>
+                                {% for holiday in holiday_systems %}
+                                    <option value="{{ holiday.value }}">{{ holiday.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Holiday System</label>
                         </div>
@@ -67,22 +79,31 @@
                         <div class="input-field col s12">
                             <select multiple name="jobexp">
                                 <option value="" disabled selected>Choose Experience Requirement</option>
-                                <option value="1">1年以下</option>
-                                <option value="3">1-3年</option>
-                                <option value="5">3-5年</option>
-                                <option value="10">5-10年</option>
-                                <option value="99">10年以上</option>
+                                {% for exp in experience_requirements %}
+                                    <option value="{{ exp.value }}">{{ exp.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Experience Requirement</label>
+                        </div>
+
+                        <!-- Science Park Filter -->
+                        <div class="input-field col s12">
+                            <select name="zone">
+                                <option value="" disabled selected>Choose Science Park</option>
+                                {% for science_park_zone in science_parks %}
+                                    <option value="{{ science_park_zone.value }}">{{ science_park_zone.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Science Park</label>
                         </div>
 
                         <!-- Company Type (Zone) Filter -->
                         <div class="input-field col s12">
                             <select name="zone">
                                 <option value="" disabled selected>Choose Company Type</option>
-                                <option value="16">上市上櫃</option>
-                                <option value="5">外商一般</option>
-                                <option value="4">外商資訊</option>
+                                {% for company in company_types %}
+                                    <option value="{{ company.value }}">{{ company.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Company Type</label>
                         </div>
@@ -91,16 +112,9 @@
                         <div class="input-field col s12">
                             <select multiple name="wf">
                                 <option value="" disabled selected>Choose Benefits</option>
-                                <option value="1">年終獎金</option>
-                                <option value="2">三節獎金</option>
-                                <option value="3">員工旅遊</option>
-                                <option value="4">分紅配股</option>
-                                <option value="5">設施福利</option>
-                                <option value="6">休假福利</option>
-                                <option value="7">津貼/補助</option>
-                                <option value="8">彈性上下班</option>
-                                <option value="9">健康檢查</option>
-                                <option value="10">團體保險</option>
+                                {% for benefit in benefits %}
+                                    <option value="{{ benefit.value }}">{{ benefit.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Benefits</label>
                         </div>
@@ -109,12 +123,9 @@
                         <div class="input-field col s12">
                             <select multiple name="edu">
                                 <option value="" disabled selected>Choose Education Requirement</option>
-                                <option value="1">高中職以下</option>
-                                <option value="2">高中職</option>
-                                <option value="3">專科</option>
-                                <option value="4">大學</option>
-                                <option value="5">碩士</option>
-                                <option value="6">博士</option>
+                                {% for edu in education_requirements %}
+                                    <option value="{{ edu.value }}">{{ edu.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Education Requirement</label>
                         </div>
@@ -123,8 +134,9 @@
                         <div class="input-field col s12">
                             <select name="remoteWork">
                                 <option value="" disabled selected>Choose Remote Work Option</option>
-                                <option value="1">完全遠端</option>
-                                <option value="2">部分遠端</option>
+                                {% for remote in remote_work_options %}
+                                    <option value="{{ remote.value }}">{{ remote.label }}</option>
+                                {% endfor %}
                             </select>
                             <label>Remote Work</label>
                         </div>

@@ -3,11 +3,18 @@ from .job104_spider import Job104Spider
 from django.core.paginator import Paginator
 import json
 import subprocess
+from django.conf import settings
+import os
 
 PAGINATION = 10
 
 # Create your views here.
 def index(request):
+    json_file_path = os.path.join(settings.BASE_DIR, 'data', 'filters.json')
+
+    with open(json_file_path, 'r', encoding='utf-8') as f:
+        context = json.load(f)
+
     current_data = request.session.get('results', [])
     total_count = request.session.get('total_count', 0)
     keyword = request.session.get('keyword', '')
@@ -16,13 +23,13 @@ def index(request):
     paginator = Paginator(current_data, PAGINATION)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    context['page_obj'] = page_obj
+    context['total_count'] = total_count
+    context['keyword'] = keyword
+    context['fitter_results'] = fitter_results
     
-    return render(request, 'analysis/index.html', {
-        'page_obj': page_obj,
-        'total_count': total_count,
-        'keyword': keyword,
-        'fitter_results': fitter_results
-    })
+    return render(request, 'analysis/index.html', context)
 
 def search(request):
     # Check if it's a new search or a pagination request
