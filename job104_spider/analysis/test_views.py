@@ -6,15 +6,32 @@ from django.core.paginator import Paginator
 from itertools import cycle
 import subprocess
 import json
+
 # Create your tests here.
 class JobSearchTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_index_view(self):
+    @patch('builtins.open', new_callable=mock_open, read_data=json.dumps({
+        'areas': [{'id': '6001001000', 'name': '台北市'}, {'id': '6001016000', 'name': '高雄市'}],
+        'work_shifts': [{'id': '1', 'name': '日班'}, {'id': '2', 'name': '夜班'}],
+        'company_types': [{'id': '16', 'name': '上市上櫃'}, {'id': '5', 'name': '外商一般'}],
+        'benefits': [{'id': '1', 'name': '年終獎金'}, {'id': '2', 'name': '三節獎金'}]
+    }))
+    def test_index_view(self, mock_open):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Job Search')
+
+        # Ensure the JSON data is being loaded correctly
+        context = response.context
+        self.assertIn('areas', context)
+        self.assertIn('work_shifts', context)
+        self.assertIn('company_types', context)
+        self.assertIn('benefits', context)
+        
+        # Ensure the areas data from the mocked JSON is passed
+        self.assertEqual(context['areas'][0]['name'], '台北市')
 
     @patch('analysis.job104_spider.Job104Spider.search')
     @patch('analysis.job104_spider.Job104Spider.search_job_transform')
