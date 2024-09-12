@@ -29,8 +29,21 @@ def search(request):
     if request.method == 'POST':
         # New search request
         keyword = request.POST.get('keyword')
+        
+
+        filter_params = {}
+        filter_params['area'] = ','.join(request.POST.getlist('area'))  # Area (can be multiple)
+        filter_params['s9'] = ','.join(request.POST.getlist('s9'))  # Work shift
+        filter_params['wktm'] = request.POST.get('wktm')  # Holiday system
+        filter_params['jobexp'] = ','.join(request.POST.getlist('jobexp'))  # Experience
+        filter_params['zone'] = request.POST.get('zone')  # Company type
+        filter_params['wf'] = ','.join(request.POST.getlist('wf'))  # Benefits
+        filter_params['edu'] = ','.join(request.POST.getlist('edu'))  # Education
+        filter_params['remoteWork'] = request.POST.get('remoteWork')  # Remote work
+        filter_params['excludeJobKeyword'] = request.POST.get('excludeJobKeyword')  # Exclude keywords
+        
         job_spider = Job104Spider()
-        total_count, jobs = job_spider.search(keyword, max_num=100)
+        total_count, jobs = job_spider.search(keyword, max_num=100, filter_params=filter_params)
         transformed_jobs = [job_spider.search_job_transform(job) for job in jobs]
 
         # Store the search results in the session

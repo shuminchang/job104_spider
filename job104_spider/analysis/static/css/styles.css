@@ -1,0 +1,15 @@
+body {
+    padding: 20px;
+}
+.pagination {
+    margin: 20px 0;
+}
+
+.scrollable-table {
+    max-height: 300px; /* Adjust this to whatever height works best */
+    overflow-y: auto;
+    display: block;
+}
+#advanced-search-filters {
+    margin-top: 20px;
+}

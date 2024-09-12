@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Search and Fitter</title>
@@ -10,23 +11,7 @@
     <!-- Material Icons from Google Fonts -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!-- Optional: Custom CSS -->
-    <style>
-        body {
-            padding: 20px;
-        }
-        .pagination {
-            margin: 20px 0;
-        }
-
-        .scrollable-table {
-            max-height: 300px; /* Adjust this to whatever height works best */
-            overflow-y: auto;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <div class="container">
@@ -38,6 +23,120 @@
                     <label for="keyword">Search Keyword:</label>
                     <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required>
                 </div>
+                <!-- Toggle Button for Advanced Search -->
+                <div class="row">
+                    <a class="waves-effect waves-light btn" id="toggle-advanced-search">Advanced Search</a>
+                </div>
+
+                <!-- Advanced Search Filters -->
+                <div id="advanced-search-filters" style="display:none;">
+                    <div class="row">
+                        <!-- Area Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="area">
+                                <option value="" disabled selected>Choose Area</option>
+                                <option value="6001001000">台北市</option>
+                                <option value="6001016000">高雄市</option>
+                                <!-- Add more area options as needed -->
+                            </select>
+                            <label>Area</label>
+                        </div>
+
+                        <!-- Work Shift Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="s9">
+                                <option value="" disabled selected>Choose Work Shift</option>
+                                <option value="1">日班</option>
+                                <option value="2">夜班</option>
+                                <option value="4">大夜班</option>
+                                <option value="8">假日班</option>
+                            </select>
+                            <label>Work Shift</label>
+                        </div>
+
+                        <!-- Holiday System Filter -->
+                        <div class="input-field col s12">
+                            <select name="wktm">
+                                <option value="" disabled selected>Choose Holiday System</option>
+                                <option value="1">週休二日</option>
+                            </select>
+                            <label>Holiday System</label>
+                        </div>
+
+                        <!-- Experience Requirement Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="jobexp">
+                                <option value="" disabled selected>Choose Experience Requirement</option>
+                                <option value="1">1年以下</option>
+                                <option value="3">1-3年</option>
+                                <option value="5">3-5年</option>
+                                <option value="10">5-10年</option>
+                                <option value="99">10年以上</option>
+                            </select>
+                            <label>Experience Requirement</label>
+                        </div>
+
+                        <!-- Company Type (Zone) Filter -->
+                        <div class="input-field col s12">
+                            <select name="zone">
+                                <option value="" disabled selected>Choose Company Type</option>
+                                <option value="16">上市上櫃</option>
+                                <option value="5">外商一般</option>
+                                <option value="4">外商資訊</option>
+                            </select>
+                            <label>Company Type</label>
+                        </div>
+
+                        <!-- Benefits (Welfare) Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="wf">
+                                <option value="" disabled selected>Choose Benefits</option>
+                                <option value="1">年終獎金</option>
+                                <option value="2">三節獎金</option>
+                                <option value="3">員工旅遊</option>
+                                <option value="4">分紅配股</option>
+                                <option value="5">設施福利</option>
+                                <option value="6">休假福利</option>
+                                <option value="7">津貼/補助</option>
+                                <option value="8">彈性上下班</option>
+                                <option value="9">健康檢查</option>
+                                <option value="10">團體保險</option>
+                            </select>
+                            <label>Benefits</label>
+                        </div>
+
+                        <!-- Education Requirement Filter -->
+                        <div class="input-field col s12">
+                            <select multiple name="edu">
+                                <option value="" disabled selected>Choose Education Requirement</option>
+                                <option value="1">高中職以下</option>
+                                <option value="2">高中職</option>
+                                <option value="3">專科</option>
+                                <option value="4">大學</option>
+                                <option value="5">碩士</option>
+                                <option value="6">博士</option>
+                            </select>
+                            <label>Education Requirement</label>
+                        </div>
+
+                        <!-- Remote Work Filter -->
+                        <div class="input-field col s12">
+                            <select name="remoteWork">
+                                <option value="" disabled selected>Choose Remote Work Option</option>
+                                <option value="1">完全遠端</option>
+                                <option value="2">部分遠端</option>
+                            </select>
+                            <label>Remote Work</label>
+                        </div>
+
+                        <!-- Excluded Keywords Filter -->
+                        <div class="input-field col s12">
+                            <label for="excludeJobKeyword">Exclude Job Keywords</label>
+                            <input type="text" id="excludeJobKeyword" name="excludeJobKeyword">
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="col s12">
                     <button type="submit" class="btn waves-effect waves-light">Submit</button>
                 </div>
@@ -53,13 +152,15 @@
                         <th>Company</th>
                         <th>Location</th>
                         <th>Salary</th>
+                        <th>Type</th>
                     </tr>
                     {% for result in page_obj %}
                         <tr>
-                            <td><a href="{{ result.job_url}}">{{ result.name }}</a></td>
+                            <td><a href="{{ result.job_url}}" target="_blank">{{ result.name }}</a></td>
                             <td>{{ result.company_name }}</td>
                             <td>{{ result.company_addr }}</td>
                             <td>{{ result.salary }}</td>
+                            <td>{{ result.tags.zone.desc }}</td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -112,5 +213,11 @@
             </table>
         {% endif %}
     </div>
+
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
